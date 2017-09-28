@@ -110,8 +110,9 @@ def build(bld):
     ndnCxxSrc = bld.path.ant_glob('ndn-cxx/src/**/*.cpp',
                                   excl=['ndn-cxx/src/net/detail/*.cpp',
                                         'ndn-cxx/src/net/network-monitor*.cpp',
-                                        'ndn-cxx/src/util/dummy-client-face.cpp',
-                                        'ndn-cxx/src/security/tpm/*osx.cpp'])
+					 'ndn-cxx/src/util/dummy-client-face.cpp',
+					 'ndn-cxx/src/security/tpm/*osx.cpp',
+					 'ndn-cxx/src/net/network-interface.cpp'])
 
     nfdSrc = bld.path.ant_glob(['%s/**/*.cpp' % dir for dir in ['NFD/core', 'NFD/daemon', 'NFD/rib']],
                                excl=['NFD/daemon/main.cpp',
@@ -150,7 +151,10 @@ def build(bld):
     module.full_headers += bld.path.ant_glob('NFD/common.hpp')
 
     module.ndncxx_headers = bld.path.ant_glob(['ndn-cxx/src/**/*.hpp'],
-                                              excl=['src/**/*-osx.hpp', 'src/detail/**/*'])
+                                              excl=['src/**/*-osx.hpp',
+						     'src/detail/**/*',
+						     'src/net/detail/linux-if-constants.hpp',
+						     '/src/net/network-interface.hpp'])
     if bld.env.ENABLE_EXAMPLES:
         bld.recurse('examples')
 
