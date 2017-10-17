@@ -5,6 +5,55 @@ This file contains ndnSIM release notes.
 
 All of the ndnSIM documentation is accessible from the `ndnSIM website <http://ndnsim.net>`__.
 
+Release 2.4 (Changes since release 2.3)
+---------------------------------------
+
+Release date: October X, 2017
+
+Overview
+~~~~~~~~
+
+- The submodules of NFD and ndn-cxx have been both upgraded to version 0.6.0
+  (:issue:`4306`).
+
+  Features of NFD:
+
+    * Replace Link with ForwardingHint as part of Interest processing.
+    * New capabilities in multicast strategy: NACK support, consumer
+      retransmission, per-upstream exponential suppression of retransmissions
+    * Switch to V2 security framework.
+    * Introduce strategy parameters that can be specified when selecting a
+      strategy for a namespace.
+    * Optional best-effort link-layer reliability feature in NDNLPv2.
+
+  Features of ndn-cxx:
+
+    * Breaking change - Security framework version 2
+    * ForwardingHint, Delegation, and DelegationList; refactoring of Interest
+      encoding to include ForwardingHint instead of LinkObject, following the
+      latest NDN specification updates.
+    * Removed dependency on CryptoPP library.
+    * Add support for CongestionMark and Ack NDNLPv2 fields.
+
+- Upgrade the used NS-3 version to commit
+  b1643b280486bd08edcdbf93fd999c6a071e16f0 (:issue:`4311`).
+
+    .. note::
+       In order to retrieve the marked versions of ndn-cxx and NFD, use
+       ``--recursive`` option to the git clone command or run ``git
+       submodule update --init`` after clone, pull, or merge.
+
+Improvements and bug fixes
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Internal refactoring of dummy keychain to work with security v2 of ndn-cxx
+  (:issue:`4306`)
+
+- Updates of the ndnSIM documentation and Technical Report (:issue:`4039`)(:issue:`4213`)
+
+  * Added page about community contributions to the simulator.
+  * CS tracer documentation update.
+
 Release 2.3 (Changes since release 2.2)
 ---------------------------------------
 
