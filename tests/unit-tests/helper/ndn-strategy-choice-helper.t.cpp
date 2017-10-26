@@ -33,7 +33,7 @@ public:
   {
     Config::SetDefault("ns3::PointToPointNetDevice::DataRate", StringValue("10Mbps"));
     Config::SetDefault("ns3::PointToPointChannel::Delay", StringValue("1ms"));
-    Config::SetDefault("ns3::DropTailQueue::MaxPackets", StringValue("500"));
+    Config::SetDefault("ns3::QueueBase::MaxPackets", UintegerValue(500));
 
     // Creating two 3 node topologies:                      //
     //                                                      //
@@ -143,9 +143,10 @@ BOOST_AUTO_TEST_CASE(InstallAllBuiltInStrategy)
 
 class NullStrategy : public nfd::fw::Strategy {
 public:
-  NullStrategy(nfd::Forwarder& forwarder)
-    : Strategy(forwarder, STRATEGY_NAME)
+  NullStrategy(nfd::Forwarder& forwarder, const Name& name = getStrategyName())
+    : Strategy(forwarder)
   {
+    this->setInstanceName(name);
   }
 
   virtual void
@@ -157,9 +158,16 @@ public:
 
 public:
   static const Name STRATEGY_NAME;
+
+  static const Name& getStrategyName()
+  {
+    static Name strategyName("ndn:/localhost/nfd/strategy/unit-tests/null-strategy/%FD%00");
+    return strategyName;
+  }
 };
 
 const Name NullStrategy::STRATEGY_NAME = "ndn:/localhost/nfd/strategy/unit-tests/null-strategy";
+
 
 // template<class Strategy>
 // static void

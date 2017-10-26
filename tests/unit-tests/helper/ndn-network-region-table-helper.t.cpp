@@ -19,6 +19,7 @@
 
 #include "helper/ndn-network-region-table-helper.hpp"
 #include "helper/ndn-app-helper.hpp"
+#include <ndn-cxx/link.hpp>
 
 #include "../tests-common.hpp"
 
@@ -150,7 +151,10 @@ BOOST_AUTO_TEST_CASE(WithoutNetworkRegion)
 {
   FactoryCallbackApp::Install(getNode("1"), [this] () -> shared_ptr<void> {
       Interest i("/prefix/someData");
-      i.setLink(makeLink("/otherPrefix"));
+      ::ndn::Delegation del;
+      del.name = Name("/otherPrefix");
+      del.preference = 1;
+      i.setForwardingHint(::ndn::DelegationList({del}));
       return make_shared<TesterApp>(i, this);
     })
     .Start(Seconds(0.01));
@@ -159,8 +163,8 @@ BOOST_AUTO_TEST_CASE(WithoutNetworkRegion)
   Simulator::Run();
 
   BOOST_CHECK_EQUAL(this->m_nData, 0);
-  BOOST_CHECK_EQUAL(m_nTimeouts, 0);
-  BOOST_CHECK_EQUAL(m_nNacks, 1);
+  BOOST_CHECK_EQUAL(m_nTimeouts, 1);
+  BOOST_CHECK_EQUAL(m_nNacks, 0);
 }
 
 BOOST_AUTO_TEST_CASE(WithNetworkRegion)
@@ -169,7 +173,10 @@ BOOST_AUTO_TEST_CASE(WithNetworkRegion)
 
   FactoryCallbackApp::Install(getNode("1"), [this] () -> shared_ptr<void> {
       Interest i("/prefix/someData");
-      i.setLink(makeLink("/otherPrefix"));
+      ::ndn::Delegation del;
+      del.name = Name("/otherPrefix");
+      del.preference = 1;
+      i.setForwardingHint(::ndn::DelegationList({del}));
       return make_shared<TesterApp>(i, this);
     })
     .Start(Seconds(0.01));
@@ -188,7 +195,10 @@ BOOST_AUTO_TEST_CASE(WithMoreSpecificNetworkRegion)
 
   FactoryCallbackApp::Install(getNode("1"), [this] () -> shared_ptr<void> {
       Interest i("/prefix/someData");
-      i.setLink(makeLink("/otherPrefix"));
+      ::ndn::Delegation del;
+      del.name = Name("/otherPrefix");
+      del.preference = 1;
+      i.setForwardingHint(::ndn::DelegationList({del}));
       return make_shared<TesterApp>(i, this);
     })
     .Start(Seconds(0.01));
@@ -207,7 +217,10 @@ BOOST_AUTO_TEST_CASE(WithLessSpecificLink)
 
   FactoryCallbackApp::Install(getNode("1"), [this] () -> shared_ptr<void> {
       Interest i("/prefix/someData");
-      i.setLink(makeLink("/otherPrefix/moreSpecific"));
+      ::ndn::Delegation del;
+      del.name = Name("/otherPrefix/moreSpecific");
+      del.preference = 1;
+      i.setForwardingHint(::ndn::DelegationList({del}));
       return make_shared<TesterApp>(i, this);
     })
     .Start(Seconds(0.01));
@@ -216,8 +229,8 @@ BOOST_AUTO_TEST_CASE(WithLessSpecificLink)
   Simulator::Run();
 
   BOOST_CHECK_EQUAL(m_nData, 0);
-  BOOST_CHECK_EQUAL(m_nTimeouts, 0);
-  BOOST_CHECK_EQUAL(m_nNacks, 1);
+  BOOST_CHECK_EQUAL(m_nTimeouts, 1);
+  BOOST_CHECK_EQUAL(m_nNacks, 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END() // MultiNode
